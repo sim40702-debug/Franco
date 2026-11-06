@@ -10,67 +10,72 @@
   <!-- La casetta con il giardino (il disegno lo mette script.js) -->
   <div id="casa" class="cliccabile"></div>
 
+  <!-- Senza casetta: il tappetino dove dorme -->
+  <div id="tappetino"></div>
+  <div id="zzzTappetino"><span>z</span><span>z</span><span>z</span></div>
+
   <!-- Il bidone dove Franco svuota l'aspirapolvere -->
   <div id="bidone">
     <div class="coperchio"></div>
     <div class="secchio">Aspirato</div>
   </div>
 
+  <!-- La macchina e il camion (i disegni li mette script.js) -->
+  <div id="auto"></div>
+  <div id="camion"></div>
+
   <!-- Franco (il disegno lo mette script.js) -->
   <div id="omino" class="cliccabile">
     <div id="fumetto"></div>
   </div>
 
-  <!-- Qui compare il menu quando svegli Franco dalla casetta -->
-  <div id="popupCasa" class="cliccabile"></div>
+  <!-- Il menu -->
+  <div id="popup" class="cliccabile">
 
-  <!-- Il notch -->
-  <div id="notch" class="cliccabile">
-
-    <!-- quando è chiuso: faccina a sinistra, testo a destra -->
-    <div id="notchChiuso">
-      <div class="faccina"></div>
-      <div id="notchTesto"></div>
+    <!-- la prima volta: scegli il nome -->
+    <div id="sceltaNome" class="sezione">
+      <input type="text" id="campoNome" maxlength="14" value="Franco">
+      <button id="btnNome" class="voce principale">Va bene</button>
     </div>
 
-    <!-- il menu (script.js lo sposta nel notch o sopra la casetta) -->
-    <div id="pannello">
-      <div class="intestazione">
-        <div id="ominoGrande"></div>
-        <div id="fumettoPannello"></div>
+    <!-- il menu -->
+    <div id="menu" class="sezione">
+      <button id="btnPulisci" class="voce principale">Pulisci la Scrivania</button>
+      <button id="btnCamion" class="voce">Per favore, usa il camion</button>
+      <button id="btnReport" class="voce">Quanto è disordinata?</button>
+      <button id="btnCartella" class="voce">Apri la cartella Aspirato</button>
+      <button id="btnImpostazioni" class="voce">Impostazioni</button>
+      <button id="btnDormi" class="voce">Torna a dormire</button>
+
+      <div class="titoletto">I file vanno:</div>
+      <div class="modi">
+        <button class="modo scelto" data-modo="documenti">In Aspirato</button>
+        <button class="modo" data-modo="cestino">Nel Cestino</button>
+        <button class="modo" data-modo="prova">Per finta</button>
       </div>
+    </div>
 
-      <!-- la prima volta: scegli il nome -->
-      <div id="sceltaNome" class="sezione">
-        <input type="text" id="campoNome" maxlength="14" value="Franco">
-        <button id="btnNome" class="voce principale">Va bene</button>
-      </div>
+    <!-- impostazioni -->
+    <div id="impostazioni" class="sezione">
+      <label class="interruttore">
+        <span>Casetta con giardino</span>
+        <input type="checkbox" id="sceltaCasa">
+      </label>
+      <label class="interruttore">
+        <span>Scorciatoia nel notch</span>
+        <input type="checkbox" id="sceltaNotch">
+      </label>
+      <button id="btnCambiaNome" class="voce">Cambia nome</button>
+      <button id="btnIndietro" class="voce">Indietro</button>
+      <button id="btnChiudi" class="voce piccola">Chiudi l'app</button>
+    </div>
 
-      <!-- il menu -->
-      <div id="menu" class="sezione">
-        <button id="btnPulisci" class="voce principale">Pulisci la Scrivania</button>
-        <button id="btnReport" class="voce">Quanto è disordinata?</button>
-        <button id="btnCartella" class="voce">Apri la cartella Aspirato</button>
-        <button id="btnCambiaNome" class="voce">Cambia nome</button>
-        <button id="btnDormi" class="voce">Torna a dormire</button>
-
-        <div class="titoletto">I file vanno:</div>
-        <div class="modi">
-          <button class="modo scelto" data-modo="documenti">In Aspirato</button>
-          <button class="modo" data-modo="cestino">Nel Cestino</button>
-          <button class="modo" data-modo="prova">Per finta</button>
-        </div>
-
-        <button id="btnChiudi" class="voce piccola">Chiudi l'app</button>
-      </div>
-
-      <!-- mentre lavora -->
-      <div id="menuLavoro" class="sezione">
-        <div id="statoLavoro"></div>
-        <button id="btnPausa" class="voce principale">Pausa</button>
-        <button id="btnBasta" class="voce">Basta così, torna a casa</button>
-        <button id="btnChiudiMenu" class="voce">Chiudi il menu</button>
-      </div>
+    <!-- mentre lavora -->
+    <div id="menuLavoro" class="sezione">
+      <div id="statoLavoro"></div>
+      <button id="btnPausa" class="voce principale">Pausa</button>
+      <button id="btnBasta" class="voce">Basta così, torna a casa</button>
+      <button id="btnChiudiMenu" class="voce">Chiudi il menu</button>
     </div>
   </div>
 

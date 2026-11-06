@@ -1,5 +1,5 @@
 // main.js: la parte "nascosta" dell'app (Node.js)
-// Qui si crea la finestra trasparente e si lavora con i file veri.
+// Qui si creano le finestre e si lavora con i file veri.
 
 const { app, BrowserWindow, ipcMain, screen, shell, nativeImage } = require("electron");
 const path = require("path");
@@ -11,41 +11,102 @@ const cartellaScrivania = app.getPath("desktop");
 const cartellaDestinazione = path.join(app.getPath("documents"), "Aspirato");
 const fileImpostazioni = path.join(app.getPath("userData"), "impostazioni.json");
 
-let finestra;
+let finestra;        // la finestra grande con Franco (sulla Scrivania)
+let finestraNotch;   // la finestrella del notch (si può spegnere)
 
 
-// Crea una finestra trasparente grande come TUTTO lo schermo
-// (anche sopra la barra dei menu, così possiamo usare il notch)
+// ===== IMPOSTAZIONI =====
+// nome dell'omino, se vuoi la casetta, se vuoi il notch
+function leggiImpostazioni() {
+  let impostazioni = { nome: "", casa: true, notch: true };
+  try {
+    const salvate = JSON.parse(fs.readFileSync(fileImpostazioni, "utf8"));
+    if (salvate.nome !== undefined) { impostazioni.nome = salvate.nome; }
+    if (salvate.casa !== undefined) { impostazioni.casa = salvate.casa; }
+    if (salvate.notch !== undefined) { impostazioni.notch = salvate.notch; }
+  } catch (errore) {
+    // file non ancora creato: è la prima volta
+  }
+  return impostazioni;
+}
+
+function salvaImpostazioni(impostazioni) {
+  fs.mkdirSync(path.dirname(fileImpostazioni), { recursive: true });
+  fs.writeFileSync(fileImpostazioni, JSON.stringify(impostazioni));
+}
+
+
+// ===== FINESTRA DI FRANCO =====
+// Grande come lo spazio libero della Scrivania (senza barra dei menu e senza Dock).
+// È una finestra normale: le altre app le stanno sopra, quindi Franco
+// si vede solo sulla Scrivania. E resta solo nello spazio dove l'hai aperta.
 function creaFinestra() {
-  const schermo = screen.getPrimaryDisplay();
+  const area = screen.getPrimaryDisplay().workArea;
 
   finestra = new BrowserWindow({
-    x: schermo.bounds.x,
-    y: schermo.bounds.y,
-    width: schermo.bounds.width,
-    height: schermo.bounds.height,
-    transparent: true,     // si vede la Scrivania sotto
-    frame: false,          // niente bordo e niente pulsanti della finestra
+    x: area.x,
+    y: area.y,
+    width: area.width,
+    height: area.height,
+    transparent: true,   // si vede la Scrivania sotto
+    frame: false,        // niente bordo e niente pulsanti della finestra
     hasShadow: false,
     resizable: false,
     movable: false,
-    enableLargerThanScreen: true,
+    focusable: false,    // non ruba la tastiera alle altre app
     skipTaskbar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
   });
 
-  // livello alto: la finestra sta anche sopra la barra dei menu
-  finestra.setAlwaysOnTop(true, "screen-saver");
-  finestra.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-  finestra.setBounds(schermo.bounds);
-
   // i clic "passano attraverso" la finestra, così puoi usare il Mac normalmente
-  // (la pagina li riattiva quando il mouse è sopra il notch o sopra Franco)
+  // (la pagina li riattiva quando il mouse è sopra Franco, la casa o il menu)
   finestra.setIgnoreMouseEvents(true, { forward: true });
 
   finestra.loadFile("index.html");
+}
+
+
+// ===== FINESTRELLA DEL NOTCH =====
+// Una piccola striscia nera attaccata al notch: cliccandola svegli Franco
+function creaNotch() {
+  if (finestraNotch) {
+    return; // c'è già
+  }
+  const schermo = screen.getPrimaryDisplay();
+  const altezzaBarra = Math.max(schermo.workArea.y - schermo.bounds.y, 24);
+  const larghezza = 300;
+
+  finestraNotch = new BrowserWindow({
+    x: schermo.bounds.x + Math.round(schermo.bounds.width / 2 - larghezza / 2),
+    y: schermo.bounds.y,
+    width: larghezza,
+    height: altezzaBarra,
+    transparent: true,
+    frame: false,
+    hasShadow: false,
+    resizable: false,
+    movable: false,
+    focusable: false,
+    skipTaskbar: true,
+    enableLargerThanScreen: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // sopra la barra dei menu
+  finestraNotch.setAlwaysOnTop(true, "screen-saver");
+  finestraNotch.setPosition(schermo.bounds.x + Math.round(schermo.bounds.width / 2 - larghezza / 2), schermo.bounds.y);
+  finestraNotch.loadFile("notch.html");
+}
+
+function chiudiNotch() {
+  if (finestraNotch) {
+    finestraNotch.destroy();
+    finestraNotch = null;
+  }
 }
 
 
@@ -89,36 +150,25 @@ function posizioniDaFinder() {
 
 // ===== COSE CHE LA PAGINA PUO' CHIEDERE =====
 
-// Misure dello schermo
+// Misure: dove finisce lo spazio (sopra il Dock), dentro la finestra
 ipcMain.handle("info", function () {
-  const schermo = screen.getPrimaryDisplay();
-  return {
-    barraMenu: schermo.workArea.y - schermo.bounds.y,                   // altezza della barra dei menu
-    fondo: schermo.workArea.y + schermo.workArea.height - schermo.bounds.y // dove finisce lo spazio (sopra il Dock)
-  };
+  const area = screen.getPrimaryDisplay().workArea;
+  return { fondo: area.height };
 });
 
-
-// Nome dell'omino (vuoto la prima volta)
-ipcMain.handle("leggi-nome", function () {
-  try {
-    const testo = fs.readFileSync(fileImpostazioni, "utf8");
-    return JSON.parse(testo).nome;
-  } catch (errore) {
-    return ""; // file non ancora creato: è la prima volta
-  }
+ipcMain.handle("leggi-impostazioni", function () {
+  return leggiImpostazioni();
 });
 
-ipcMain.handle("salva-nome", function (evento, nome) {
-  fs.mkdirSync(path.dirname(fileImpostazioni), { recursive: true });
-  fs.writeFileSync(fileImpostazioni, JSON.stringify({ nome: nome }));
+ipcMain.handle("salva-impostazioni", function (evento, impostazioni) {
+  salvaImpostazioni(impostazioni);
   return true;
 });
 
 
 // Lista dei file sulla Scrivania, con posizione, peso e età
 ipcMain.handle("leggi-file", async function () {
-  const schermo = screen.getPrimaryDisplay();
+  const area = screen.getPrimaryDisplay().workArea;
   const nomi = fs.readdirSync(cartellaScrivania);
   const posizioni = await posizioniDaFinder();
   let lista = [];
@@ -134,15 +184,15 @@ ipcMain.handle("leggi-file", async function () {
     let x;
     let y;
     if (posizioni[nome]) {
-      // posizione vera dell'icona
-      x = posizioni[nome].x - schermo.bounds.x;
-      y = posizioni[nome].y - schermo.bounds.y;
+      // posizione vera dell'icona (tolgo la barra dei menu)
+      x = posizioni[nome].x - area.x;
+      y = posizioni[nome].y - area.y;
     } else {
       // posizione di riserva: colonne partendo da destra, come fa il Finder
       let colonna = Math.floor(lista.length / 8);
       let riga = lista.length % 8;
-      x = schermo.bounds.width - 70 - colonna * 100;
-      y = schermo.workArea.y + 60 + riga * 100;
+      x = area.width - 70 - colonna * 100;
+      y = 60 + riga * 100;
     }
 
     // peso in byte e da quanti giorni non viene modificato
@@ -236,6 +286,40 @@ ipcMain.on("mouse", function (evento, ignora) {
   finestra.setIgnoreMouseEvents(ignora, { forward: true });
 });
 
+// Menu aperto: la finestra viene davanti (così il menu si vede) e accetta la tastiera
+ipcMain.on("menu-aperto", function () {
+  finestra.setFocusable(true);
+  finestra.setAlwaysOnTop(true, "floating");
+  finestra.focus();
+});
+
+// Menu chiuso: la finestra torna normale (le altre app le vanno sopra)
+ipcMain.on("menu-chiuso", function () {
+  finestra.setAlwaysOnTop(false);
+  finestra.setFocusable(false);
+});
+
+// Il notch è stato cliccato: lo dico alla finestra di Franco
+ipcMain.on("notch-cliccato", function () {
+  finestra.webContents.send("sveglia-dal-notch");
+});
+
+// Testo da mostrare nel notch (z z z, 5/12...)
+ipcMain.on("testo-notch", function (evento, testo) {
+  if (finestraNotch) {
+    finestraNotch.webContents.send("testo-notch", testo);
+  }
+});
+
+// Accende o spegne il notch dalle impostazioni
+ipcMain.on("imposta-notch", function (evento, acceso) {
+  if (acceso) {
+    creaNotch();
+  } else {
+    chiudiNotch();
+  }
+});
+
 
 // Apre la cartella Documenti/Aspirato nel Finder
 ipcMain.on("apri-cartella", function () {
@@ -254,11 +338,15 @@ ipcMain.on("esci", function () {
 
 // ===== AVVIO =====
 app.whenReady().then(function () {
-  // niente icona nel Dock: Franco vive nel notch
+  // niente icona nel Dock: Franco vive sulla Scrivania
   if (app.dock) {
     app.dock.hide();
   }
   creaFinestra();
+
+  if (leggiImpostazioni().notch) {
+    creaNotch();
+  }
 });
 
 app.on("window-all-closed", function () {

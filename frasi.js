@@ -64,7 +64,8 @@ const FRASI = {
   troppi: [
     "No dai... {n} file?! Mi prendi in giro?",
     "{n} file?! Io non ci vengo, eh.",
-    "Ma scherzi? {n} file? Chiama un'impresa di pulizie!"
+    "Ma scherzi? {n} file? Chiama un'impresa di pulizie!",
+    "{n} file a piedi?! Neanche per sogno. Col camion, magari..."
   ],
   // ...poi se insisti accetta
   convinto: [
@@ -77,6 +78,15 @@ const FRASI = {
   panchina: ["Ah, che pace...", "Un po' di sole non fa male.", "Si sta bene qui."],
   fiori: ["Su, bevete, piccoli.", "Questi fiori sono la mia passione.", "Che belli che sono!"],
   sbadiglio: ["Aaaah... che sonno.", "Mi stiracchio un attimo...", "Uaaah..."],
+
+  // macchina e camion
+  auto: ["È lontano, prendo la macchina!", "Vado in macchina, faccio prima.", "Brum brum!"],
+  camion: [
+    "Visto che me l'hai chiesto con gentilezza... arriva il camion!",
+    "Il camion? Che bello! Grazie!",
+    "Con il camion è un'altra cosa!"
+  ],
+  grazieCamion: ["Fatto! Grazie camion, ciao!", "Che comodità, il camion.", "Ciao camion, alla prossima!"],
 
   // mentre lavora
   parto: [

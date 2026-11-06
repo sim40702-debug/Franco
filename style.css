@@ -12,133 +12,31 @@ html, body {
   user-select: none;
 }
 
-/* ================= NOTCH ================= */
-#notch {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
-  height: 37px; /* script.js lo cambia con l'altezza vera della barra dei menu */
-  background-color: #000;
-  border-radius: 0 0 16px 16px;
-  overflow: hidden;
-  cursor: pointer;
-  z-index: 50; /* sopra l'omino: così quando salta "sparisce" nel notch */
-  transition: width 0.4s, height 0.4s, border-radius 0.4s;
-}
-
-#notch.aperto {
-  width: 390px;
-  height: 470px !important;
-  border-radius: 0 0 32px 32px;
-  cursor: default;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-}
-
-/* --- notch chiuso --- */
-/* il notch vero sta in mezzo, quindi metto le cose ai lati */
-#notchChiuso {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  transition: opacity 0.2s;
-}
-
-#notch.aperto #notchChiuso {
-  opacity: 0;
-}
-
-/* faccina che dorme */
-.faccina {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: #fff;
-}
-
-.faccina::before,
-.faccina::after {
-  content: "";
-  position: absolute;
-  top: 8px;
-  width: 4px;
-  height: 2px;
-  background-color: #000;
-}
-
-.faccina::before { left: 4px; }
-.faccina::after  { right: 4px; }
-
-#notchTesto {
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-  min-width: 30px;
-  text-align: right;
-}
-
-/* le z che salgono una dopo l'altra */
-#notchTesto span {
-  display: inline-block;
-  animation: zeta 1.8s infinite;
-}
-#notchTesto span:nth-child(2) { animation-delay: 0.3s; }
-#notchTesto span:nth-child(3) { animation-delay: 0.6s; }
-
+/* animazione delle z che salgono (la usano più cose) */
 @keyframes zeta {
   0%   { transform: translateY(3px); opacity: 0; }
   50%  { opacity: 1; }
   100% { transform: translateY(-5px); opacity: 0; }
 }
 
-/* --- il menu --- */
-#pannello {
-  width: 390px;
-  padding: 0 22px 18px 22px;
-  color: #fff;
-}
 
-/* il menu dentro il notch */
-#notch #pannello {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  pointer-events: none; /* da chiuso non deve bloccare i clic */
-  transition: opacity 0.3s;
-}
-
-#notch.aperto #pannello {
-  opacity: 1;
-  pointer-events: auto;
-  transition-delay: 0.2s;
-}
-
-/* il menu sopra la casetta: Franco parla con il suo fumetto, quindi niente intestazione */
-#popupCasa {
+/* ================= MENU ================= */
+#popup {
   position: absolute;
   left: 14px;
-  width: 390px;
+  width: 360px;
+  padding: 14px 20px 16px 20px;
   background-color: #000;
+  color: #fff;
   border-radius: 26px;
-  padding-top: 8px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   z-index: 40;
   display: none;
   animation: compari 0.25s ease-out;
 }
 
-#popupCasa.aperto {
+#popup.aperto {
   display: block;
-}
-
-#popupCasa .intestazione {
-  display: none;
 }
 
 @keyframes compari {
@@ -146,51 +44,8 @@ html, body {
   to   { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-.intestazione {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 45px; /* script.js lo cambia: spazio per la barra dei menu */
-  min-height: 100px;
-}
-
-#ominoGrande {
-  width: 90px;
-  height: 90px;
-  flex-shrink: 0;
-}
-
-#fumettoPannello {
-  position: relative;
-  flex: 1;
-  background-color: #fff;
-  color: #111;
-  border-radius: 14px;
-  padding: 10px 12px;
-  font-size: 13px;
-  line-height: 1.35;
-  min-height: 20px;
-}
-
-#fumettoPannello:empty {
-  visibility: hidden;
-}
-
-/* punta del fumetto verso l'omino */
-#fumettoPannello::before {
-  content: "";
-  position: absolute;
-  left: -7px;
-  top: 50%;
-  margin-top: -7px;
-  border-width: 7px 8px 7px 0;
-  border-style: solid;
-  border-color: transparent #fff transparent transparent;
-}
-
 .sezione {
   display: none; /* script.js mostra la sezione giusta */
-  margin-top: 12px;
 }
 
 .voce {
@@ -257,6 +112,25 @@ html, body {
   color: #fff;
 }
 
+/* riga con l'interruttore nelle impostazioni */
+.interruttore {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background-color: #1c1c1e;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.interruttore input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
 #campoNome {
   width: 100%;
   padding: 10px 14px;
@@ -274,13 +148,18 @@ html, body {
   margin: 0 2px 4px 2px;
 }
 
-/* ================= OMINO ================= */
+
+/* ================= FRANCO ================= */
 #omino {
   position: absolute;
   width: 90px;
   height: 90px;
   display: none; /* si vede solo quando è fuori casa */
   z-index: 20;
+  cursor: pointer;
+  /* linee scure con un bordino bianco, così si vede su ogni sfondo */
+  color: #222;
+  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.95)) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35));
 }
 
 /* il disegno (SVG) */
@@ -290,26 +169,10 @@ html, body {
   overflow: visible;
 }
 
-/* sulla Scrivania: linee scure con un bordino bianco, così si vede su ogni sfondo */
-#omino {
-  color: #222;
-  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.95)) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35));
-}
-
-/* nel notch (sfondo nero): linee chiare */
-#ominoGrande {
-  color: #eee;
-}
-
 /* le parti che si muovono girano intorno al loro punto giusto */
 .gamba {
   transform-box: view-box;
   transform-origin: 40px 58px; /* il bacino */
-}
-
-.braccio {
-  transform-box: view-box;
-  transform-origin: 40px 36px; /* la spalla */
 }
 
 /* --- cammina --- */
@@ -361,27 +224,11 @@ html, body {
 .dorme .occhi-aperti { display: none; }
 .dorme .occhi-chiusi { display: inline; }
 
-/* Zzz quando dorme */
+/* Zzz e punto esclamativo */
 .zzz {
   display: none;
-  font-size: 13px;
-  font-weight: bold;
-  fill: #fff;
-}
-.dorme .zzz {
-  display: inline;
-  animation: zeta 1.8s infinite;
-}
-.dorme .disegno {
-  animation: respira 2s ease-in-out infinite;
 }
 
-@keyframes respira {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.03); }
-}
-
-/* --- sorpreso: salto e punto esclamativo --- */
 .esclamazione {
   display: none;
   font-size: 22px;
@@ -391,20 +238,11 @@ html, body {
 .sorpreso .esclamazione {
   display: inline;
 }
-.sorpreso .disegno {
-  animation: saltello 0.4s ease-out;
-}
 .sorpreso .occhio {
   r: 2.6px; /* occhi spalancati */
 }
 
-@keyframes saltello {
-  0%   { transform: translateY(0); }
-  40%  { transform: translateY(-18px); }
-  100% { transform: translateY(0); }
-}
-
-/* --- fumetto sopra l'omino --- */
+/* --- fumetto sopra Franco --- */
 #fumetto {
   position: absolute;
   bottom: 96px;
@@ -422,6 +260,7 @@ html, body {
   opacity: 0;
   transition: opacity 0.2s, transform 0.2s;
   pointer-events: none;
+  filter: none;
 }
 
 #fumetto.visibile {
@@ -440,67 +279,57 @@ html, body {
   border-color: #fff transparent transparent transparent;
 }
 
-/* ================= BIDONE ================= */
-#bidone {
-  position: absolute;
-  left: 362px; /* accanto al giardino */
-  width: 64px;
-  height: 80px;
-  z-index: 6;
+/* --- pose --- */
+/* aspirapolvere: solo quando lavora */
+.aspirapolvere {
+  display: none;
 }
 
-.secchio {
-  position: absolute;
-  bottom: 0;
-  width: 64px;
-  height: 66px;
-  background: linear-gradient(90deg, #5b6470, #8a95a3, #5b6470);
-  border-radius: 4px 4px 10px 10px;
-  color: #fff;
-  font-size: 10px;
-  font-weight: bold;
-  text-align: center;
-  padding-top: 26px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+.con-aspirapolvere .aspirapolvere {
+  display: inline;
 }
 
-.coperchio {
-  position: absolute;
-  top: 2px;
-  left: -4px;
-  width: 72px;
-  height: 12px;
-  background-color: #444c56;
-  border-radius: 6px;
-  transform-origin: 4px 12px;
-  transition: transform 0.3s;
-  z-index: 2;
+/* annaffiatoio: solo quando annaffia */
+.annaffiatoio {
+  display: none;
 }
 
-/* quando l'omino svuota il coperchio si apre */
-#bidone.aperto .coperchio {
-  transform: rotate(-70deg);
+.annaffia .annaffiatoio {
+  display: inline;
 }
 
-/* ================= ICONE E POLVERE CHE VOLANO ================= */
-.volante {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  z-index: 21;
-  pointer-events: none;
+.goccia {
+  animation: goccia 0.6s linear infinite;
+}
+.goccia.g2 { animation-delay: 0.2s; }
+.goccia.g3 { animation-delay: 0.4s; }
+
+@keyframes goccia {
+  from { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(40px); opacity: 0; }
 }
 
-.polvere {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #8b6b4a;
-  z-index: 21;
-  pointer-events: none;
+/* seduto sulla panchina: gambe in avanti */
+.seduto .gamba-a {
+  transform: rotate(-80deg);
 }
+.seduto .gamba-b {
+  transform: rotate(-65deg);
+}
+
+/* si stiracchia: braccia in alto e occhi chiusi */
+.braccia-alte {
+  display: none;
+}
+.braccia-su .braccia-alte {
+  display: inline;
+}
+.braccia-su .braccio {
+  display: none;
+}
+.braccia-su .occhi-aperti { display: none; }
+.braccia-su .occhi-chiusi { display: inline; }
+
 
 /* ================= CASETTA ================= */
 #casa {
@@ -592,57 +421,152 @@ html, body {
   100% { transform: translateY(-14px); opacity: 0; }
 }
 
-/* ================= POSE DI FRANCO ================= */
-/* aspirapolvere: solo quando lavora */
-.aspirapolvere {
+
+/* ================= TAPPETINO (senza casetta) ================= */
+#tappetino {
+  position: absolute;
+  left: 14px;
+  width: 116px;
+  height: 14px;
+  border-radius: 7px;
+  background: repeating-linear-gradient(90deg, #d9534f 0 12px, #f5e6c8 12px 24px);
+  border: 2px solid #8a3b38;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+  display: none;
+  z-index: 4;
+}
+
+#zzzTappetino {
+  position: absolute;
+  left: 36px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  display: none;
+  z-index: 21;
+}
+
+#zzzTappetino span {
+  display: inline-block;
+  animation: zeta 1.8s infinite;
+}
+#zzzTappetino span:nth-child(2) { animation-delay: 0.3s; }
+#zzzTappetino span:nth-child(3) { animation-delay: 0.6s; }
+
+
+/* ================= BIDONE ================= */
+#bidone {
+  position: absolute;
+  width: 64px;
+  height: 80px;
+  z-index: 6;
+}
+
+.secchio {
+  position: absolute;
+  bottom: 0;
+  width: 64px;
+  height: 66px;
+  background: linear-gradient(90deg, #5b6470, #8a95a3, #5b6470);
+  border-radius: 4px 4px 10px 10px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 26px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.coperchio {
+  position: absolute;
+  top: 2px;
+  left: -4px;
+  width: 72px;
+  height: 12px;
+  background-color: #444c56;
+  border-radius: 6px;
+  transform-origin: 4px 12px;
+  transition: transform 0.3s;
+  z-index: 2;
+}
+
+/* quando Franco svuota il coperchio si apre */
+#bidone.aperto .coperchio {
+  transform: rotate(-70deg);
+}
+
+
+/* ================= MACCHINA E CAMION ================= */
+#auto,
+#camion {
+  position: absolute;
+  z-index: 19;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.4));
+}
+
+#auto {
+  width: 100px;
+  height: 56px;
+}
+
+#camion {
+  width: 150px;
+  height: 80px;
+  display: none; /* arriva solo quando lo chiedi */
+}
+
+.disegno-auto,
+.disegno-camion {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Franco dentro la macchina si vede solo quando guida */
+.guidatore {
   display: none;
 }
 
-.con-aspirapolvere .aspirapolvere {
+#auto.guida .guidatore,
+#camion .guidatore {
   display: inline;
 }
 
-/* annaffiatoio: solo quando annaffia */
-.annaffiatoio {
-  display: none;
+/* ruote e spazzola del camion girano quando si muovono */
+.ruota-auto,
+.spazzola-camion,
+.scritta {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
-.annaffia .annaffiatoio {
-  display: inline;
+.in-moto .ruota-auto {
+  animation: giraRuota 0.3s linear infinite;
 }
 
-.goccia {
-  animation: goccia 0.6s linear infinite;
-}
-.goccia.g2 { animation-delay: 0.2s; }
-.goccia.g3 { animation-delay: 0.4s; }
-
-@keyframes goccia {
-  from { transform: translateY(0); opacity: 1; }
-  to   { transform: translateY(40px); opacity: 0; }
+#camion .spazzola-camion {
+  animation: giraRuota 0.4s linear infinite;
 }
 
-/* seduto sulla panchina: gambe in avanti */
-.seduto .gamba-a {
-  transform: rotate(-80deg);
-}
-.seduto .gamba-b {
-  transform: rotate(-65deg);
+
+/* ================= ICONE E POLVERE CHE VOLANO ================= */
+.volante {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  z-index: 21;
+  pointer-events: none;
 }
 
-/* si stiracchia: braccia in alto */
-.braccia-alte {
-  display: none;
+.polvere {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #8b6b4a;
+  z-index: 21;
+  pointer-events: none;
 }
-
-.braccia-su .braccia-alte {
-  display: inline;
-}
-
-.braccia-su .braccio {
-  display: none;
-}
-
-/* mentre sbadiglia la bocca... non si vede, ma tiene gli occhi chiusi */
-.braccia-su .occhi-aperti { display: none; }
-.braccia-su .occhi-chiusi { display: inline; }

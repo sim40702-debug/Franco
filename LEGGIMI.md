@@ -1,19 +1,34 @@
 # Franco
 
-Franco vive in una casetta a due piani con il giardino, in basso a sinistra
-sulla Scrivania. Di solito dorme. Ogni tanto esce da solo: si siede sulla
-panchina, annaffia i fiori, si stiracchia o si affaccia alla finestra.
-Di notte dorme e basta. D'inverno esce il fumo dal camino.
+Franco vive sulla tua Scrivania, in basso a sinistra. Si vede solo sulla
+Scrivania: le finestre delle app gli stanno sopra, e se cambi spazio
+(Mission Control, Ctrl + frecce) non ti segue.
 
-Per svegliarlo clicca la casetta (oppure il notch in alto).
-Si sveglia di colpo, commenta il disordine e ti dà il menu.
-Se gli dici di pulire prende l'aspirapolvere, si porta via i file della
-Scrivania e li svuota nel bidone vicino a casa. Poi torna a dormire.
+## Casetta o tappetino (lo scegli nelle Impostazioni)
 
-Se sulla Scrivania ci sono più di 40 file si rifiuta... finché non insisti.
+- **Con la casetta**: casetta a due piani con giardino, panchina e fiori.
+  Ogni tanto esce da solo: si siede sulla panchina, annaffia i fiori,
+  si stiracchia o si affaccia alla finestra. D'inverno esce il fumo dal camino.
+  Per svegliarlo clicca la casetta.
+- **Senza casetta**: dorme sdraiato su un tappetino. Per svegliarlo clicca lui.
 
-La prima volta che apri l'app ti chiede come lo vuoi chiamare
-(il nome compare anche sulla targhetta della porta).
+Di notte dorme e basta.
+
+## Il notch (lo puoi spegnere nelle Impostazioni)
+
+Una striscia nera attaccata al notch: cliccandola svegli Franco anche
+quando la Scrivania è coperta dalle app.
+
+## Pulire
+
+- **Pulisci la Scrivania**: prende l'aspirapolvere e si porta via i file.
+  Se un file è lontano prende la macchina, parcheggia vicino e scende.
+  Con più di 40 file si rifiuta... finché non insisti.
+- **Per favore, usa il camion**: arriva un camion spazzatrice, Franco sale
+  e pulisce con il camion (ci stanno 40 file). Se glielo chiedi con
+  gentilezza non protesta mai.
+
+Quando è pieno svuota tutto nel bidone, poi torna a dormire.
 
 ## Provarla
 
@@ -27,7 +42,8 @@ La prima volta che apri l'app ti chiede come lo vuoi chiamare
 2. Trovi l'app in `dist/Franco-darwin-arm64/Franco.app`
 3. Trascinala nella cartella Applicazioni
 
-Franco non ha l'icona nel Dock: per chiudere l'app usa "Chiudi l'app" nel menu.
+Franco non ha l'icona nel Dock: per chiudere l'app vai in
+Impostazioni e premi "Chiudi l'app".
 
 ## Permessi del Mac
 
@@ -44,10 +60,11 @@ La prima volta il Mac chiede due cose: rispondi **Consenti** a tutte e due.
 
 ## I file del progetto
 
-- `main.js`: la parte Node.js (finestra, file veri, permessi)
-- `preload.js`: il ponte tra main.js e la pagina
-- `index.html`, `style.css`: la pagina e la grafica
-- `disegni.js`: i disegni di Franco e della casetta
+- `main.js`: la parte Node.js (finestre, file veri, impostazioni)
+- `preload.js`: il ponte tra main.js e le pagine
+- `index.html`, `style.css`: la pagina di Franco e la grafica
+- `notch.html`: la striscia del notch
+- `disegni.js`: i disegni di Franco, della casetta, della macchina e del camion
 - `frasi.js`: tutte le frasi di Franco (cambiale come vuoi!)
 - `script.js`: come si comporta Franco
 - `icona.icns`: l'icona dell'app
@@ -56,7 +73,8 @@ La prima volta il Mac chiede due cose: rispondi **Consenti** a tutte e due.
 
 In cima a `script.js`:
 
-- `CAPIENZA`: quanti file ci stanno nel sacco
-- `VELOCITA`: quanto cammina veloce
+- `CAPIENZA` e `CAPIENZA_CAMION`: quanti file ci stanno
+- `VELOCITA`, `VELOCITA_AUTO`, `VELOCITA_CAMION`: quanto vanno veloci
+- `LONTANO`: da quanti pixel in su prende la macchina
 - `TROPPI_FILE`: con quanti file inizia a protestare
 - `CORREZIONE_X` e `CORREZIONE_Y`: se passa accanto alle icone invece che sopra

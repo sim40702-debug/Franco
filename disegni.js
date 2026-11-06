@@ -150,3 +150,62 @@ function disegnoCasa() {
     '  <rect x="306" y="140" width="4" height="11" fill="#7a4a24"/>' +
     '</svg>';
 }
+
+
+// ===== MACCHINA =====
+// Disegno 100 x 56, guarda a destra. Franco si vede al finestrino quando guida
+function disegnoAuto() {
+  return '' +
+    '<svg class="disegno-auto" viewBox="0 0 100 56">' +
+    // carrozzeria
+    '  <path d="M6 42 L6 31 Q8 24 19 23 L30 22 L40 10 Q42 8 46 8 L66 8 Q70 8 72 11 L82 22 L90 24 Q97 26 97 33 L97 42 Z" fill="#f2b632" stroke="#222" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // finestrino
+    '  <path d="M44 12 L66 12 L76 22 L36 22 Z" fill="#bfe6ff" stroke="#222" stroke-width="1.5"/>' +
+    // Franco che guida
+    '  <g class="guidatore">' +
+    '    <circle cx="57" cy="17" r="5" fill="#fff" stroke="#222" stroke-width="1.5"/>' +
+    '    <circle cx="59" cy="16.5" r="0.9" fill="#222"/>' +
+    '    <path d="M52 15 Q52 10 57 10 Q62 10 62 14 Z" fill="#2f6fed" stroke="#222" stroke-width="1"/>' +
+    '  </g>' +
+    // porta e faro
+    '  <line x1="56" y1="22" x2="56" y2="40" stroke="#222" stroke-width="1.5"/>' +
+    '  <circle cx="94" cy="31" r="2.5" fill="#fff6b0" stroke="#222" stroke-width="1"/>' +
+    // ruote
+    '  <g class="ruota-auto"><circle cx="26" cy="44" r="8" fill="#222"/><circle cx="26" cy="44" r="3.5" fill="#bbb" stroke="#555" stroke-width="2" stroke-dasharray="2 2"/></g>' +
+    '  <g class="ruota-auto"><circle cx="77" cy="44" r="8" fill="#222"/><circle cx="77" cy="44" r="3.5" fill="#bbb" stroke="#555" stroke-width="2" stroke-dasharray="2 2"/></g>' +
+    '</svg>';
+}
+
+
+// ===== CAMION SPAZZATRICE =====
+// Disegno 150 x 80, guarda a destra. Davanti c'è la spazzola che raccoglie i file
+function disegnoCamion() {
+  return '' +
+    '<svg class="disegno-camion" viewBox="0 0 150 80">' +
+    // cassone
+    '  <rect x="4" y="10" width="90" height="52" rx="6" fill="#3fa34d" stroke="#1f5c27" stroke-width="2.5"/>' +
+    '  <rect x="12" y="18" width="74" height="26" rx="3" fill="#1f5c27" opacity="0.35"/>' +
+    '  <rect class="carico" x="12" y="44" width="74" height="0" rx="2" fill="#8b6b4a"/>' +
+    '  <text class="scritta" x="49" y="56" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">ASPIRATO</text>' +
+    // cabina
+    '  <path d="M94 24 L118 24 Q124 24 127 30 L134 44 L134 62 L94 62 Z" fill="#f5f5f5" stroke="#222" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '  <path d="M100 29 L117 29 Q120 29 122 33 L127 43 L100 43 Z" fill="#bfe6ff" stroke="#222" stroke-width="1.5"/>' +
+    // lampeggiante arancione sul tetto
+    '  <rect x="104" y="18" width="10" height="6" rx="2" fill="#ff9f1c" stroke="#222" stroke-width="1"/>' +
+    // Franco che guida
+    '  <g class="guidatore">' +
+    '    <circle cx="112" cy="37" r="5" fill="#fff" stroke="#222" stroke-width="1.5"/>' +
+    '    <circle cx="114" cy="36.5" r="0.9" fill="#222"/>' +
+    '    <path d="M107 35 Q107 30 112 30 Q117 30 117 34 Z" fill="#2f6fed" stroke="#222" stroke-width="1"/>' +
+    '  </g>' +
+    // spazzola davanti
+    '  <line x1="130" y1="60" x2="138" y2="66" stroke="#555" stroke-width="3"/>' +
+    '  <g class="spazzola-camion">' +
+    '    <circle cx="140" cy="68" r="9" fill="#ffcc33" stroke="#8a6d00" stroke-width="1.5"/>' +
+    '    <circle cx="140" cy="68" r="9" fill="none" stroke="#8a6d00" stroke-width="3" stroke-dasharray="3 4"/>' +
+    '  </g>' +
+    // ruote
+    '  <g class="ruota-auto"><circle cx="28" cy="66" r="10" fill="#222"/><circle cx="28" cy="66" r="4" fill="#bbb" stroke="#555" stroke-width="2" stroke-dasharray="2 2"/></g>' +
+    '  <g class="ruota-auto"><circle cx="112" cy="66" r="10" fill="#222"/><circle cx="112" cy="66" r="4" fill="#bbb" stroke="#555" stroke-width="2" stroke-dasharray="2 2"/></g>' +
+    '</svg>';
+}
