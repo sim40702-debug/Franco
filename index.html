@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Franco</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- La casetta con il giardino (il disegno lo mette script.js) -->
+  <div id="casa" class="cliccabile"></div>
+
+  <!-- Il bidone dove Franco svuota l'aspirapolvere -->
+  <div id="bidone">
+    <div class="coperchio"></div>
+    <div class="secchio">Aspirato</div>
+  </div>
+
+  <!-- Franco (il disegno lo mette script.js) -->
+  <div id="omino" class="cliccabile">
+    <div id="fumetto"></div>
+  </div>
+
+  <!-- Qui compare il menu quando svegli Franco dalla casetta -->
+  <div id="popupCasa" class="cliccabile"></div>
+
+  <!-- Il notch -->
+  <div id="notch" class="cliccabile">
+
+    <!-- quando è chiuso: faccina a sinistra, testo a destra -->
+    <div id="notchChiuso">
+      <div class="faccina"></div>
+      <div id="notchTesto"></div>
+    </div>
+
+    <!-- il menu (script.js lo sposta nel notch o sopra la casetta) -->
+    <div id="pannello">
+      <div class="intestazione">
+        <div id="ominoGrande"></div>
+        <div id="fumettoPannello"></div>
+      </div>
+
+      <!-- la prima volta: scegli il nome -->
+      <div id="sceltaNome" class="sezione">
+        <input type="text" id="campoNome" maxlength="14" value="Franco">
+        <button id="btnNome" class="voce principale">Va bene</button>
+      </div>
+
+      <!-- il menu -->
+      <div id="menu" class="sezione">
+        <button id="btnPulisci" class="voce principale">Pulisci la Scrivania</button>
+        <button id="btnReport" class="voce">Quanto è disordinata?</button>
+        <button id="btnCartella" class="voce">Apri la cartella Aspirato</button>
+        <button id="btnCambiaNome" class="voce">Cambia nome</button>
+        <button id="btnDormi" class="voce">Torna a dormire</button>
+
+        <div class="titoletto">I file vanno:</div>
+        <div class="modi">
+          <button class="modo scelto" data-modo="documenti">In Aspirato</button>
+          <button class="modo" data-modo="cestino">Nel Cestino</button>
+          <button class="modo" data-modo="prova">Per finta</button>
+        </div>
+
+        <button id="btnChiudi" class="voce piccola">Chiudi l'app</button>
+      </div>
+
+      <!-- mentre lavora -->
+      <div id="menuLavoro" class="sezione">
+        <div id="statoLavoro"></div>
+        <button id="btnPausa" class="voce principale">Pausa</button>
+        <button id="btnBasta" class="voce">Basta così, torna a casa</button>
+        <button id="btnChiudiMenu" class="voce">Chiudi il menu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="frasi.js"></script>
+  <script src="disegni.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
