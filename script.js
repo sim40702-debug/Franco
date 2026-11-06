@@ -54,6 +54,7 @@ const bottoniModo = document.querySelectorAll(".modo");
 let nomeOmino = "Franco";   // lo usa anche frasi.js
 let impostazioni = { nome: "", casa: true, notch: true };
 let fondo = 0;              // dove finisce lo spazio della Scrivania (sopra il Dock)
+let lato = "sinistra";      // dove sta la casa: "sinistra" (Mac) o "destra" (Windows)
 
 // stato di Franco:
 //   dorme     dorme in casa o sul tappetino       sveglio   menu aperto
@@ -287,10 +288,32 @@ function fraseReport(lista) {
 
 
 // ===== DOVE STANNO LE COSE =====
+// Sul Mac la casa è in basso a SINISTRA, su Windows in basso a DESTRA
+// (perché su Windows le icone partono da sinistra).
+// Tutte le posizioni sono scritte come se la casa fosse a sinistra:
+// la funzione dalBordo() le gira dall'altra parte quando serve.
+
+// x misurata dal bordo dello schermo dove sta la casa
+function dalBordo(x) {
+  if (lato === "destra") {
+    return window.innerWidth - x;
+  }
+  return x;
+}
+
+// 1 se la casa è a sinistra, -1 se è a destra (serve per le direzioni)
+function segno() {
+  return (lato === "destra") ? -1 : 1;
+}
+
+// Dove inizia il disegno della casa (largo 340)
+function sinistraCasa() {
+  return (lato === "destra") ? window.innerWidth - 350 : 10;
+}
 
 // Un punto del disegno della casa (340 x 170) sullo schermo
 function puntoCasa(x, y) {
-  return { x: 10 + x, y: fondo - 170 + y };
+  return { x: sinistraCasa() + x, y: fondo - 170 + y };
 }
 
 // Dove va Franco per tornare a casa: la porta oppure il tappetino
@@ -298,23 +321,23 @@ function posizioneCasaFranco() {
   if (impostazioni.casa) {
     return puntoCasa(49, 154);
   }
-  return { x: 72, y: fondo - 10 };
+  return { x: dalBordo(72), y: fondo - 10 };
 }
 
 // Il bidone: accanto al giardino, oppure accanto al tappetino
 function posizioneBidone() {
   if (impostazioni.casa) {
-    return { x: 394, y: fondo - 14 };
+    // sul Mac a destra del giardino, su Windows a sinistra della casa
+    let x = (lato === "destra") ? sinistraCasa() - 44 : 394;
+    return { x: x, y: fondo - 14 };
   }
-  return { x: 172, y: fondo - 14 };
+  return { x: dalBordo(172), y: fondo - 14 };
 }
 
 // Dove è parcheggiata la macchina quando non la usa
 function posizioneParcheggio() {
-  if (impostazioni.casa) {
-    return { x: 510, y: fondo - 12 };
-  }
-  return { x: 280, y: fondo - 12 };
+  let b = posizioneBidone();
+  return { x: b.x + 116 * segno(), y: fondo - 12 };
 }
 
 // I posti del giardino dove Franco fa le sue cose
@@ -329,14 +352,17 @@ function postoAttivita(nome) {
   }
   // sbadiglio: davanti a casa, oppure vicino al tappetino
   let casaFranco = posizioneCasaFranco();
-  let x = impostazioni.casa ? puntoCasa(150, 158).x : casaFranco.x + 40;
+  let x = impostazioni.casa ? puntoCasa(150, 158).x : casaFranco.x + 40 * segno();
   return { x: x, y: casaFranco.y, direzione: 1, posa: "braccia-su" };
 }
 
 // Mette casa, tappetino, bidone e macchina al posto giusto
 function sistemaScena() {
   casa.style.display = impostazioni.casa ? "block" : "none";
+  casa.style.left = sinistraCasa() + "px";
   tappetino.style.display = impostazioni.casa ? "none" : "block";
+  tappetino.style.left = (dalBordo(72) - 58) + "px"; // il tappetino è largo 116
+  zzzTappetino.style.left = (dalBordo(72) - 36) + "px";
 
   let b = posizioneBidone();
   bidone.style.left = (b.x - 32) + "px";
@@ -350,9 +376,16 @@ function sistemaScena() {
     let p = posizioneParcheggio();
     autoX = p.x;
     autoY = p.y;
-    direzioneAuto = 1;
+    direzioneAuto = segno();
   }
   disegnaAuto();
+
+  // il menu compare sopra la casa (a sinistra o a destra)
+  if (lato === "destra") {
+    popup.style.left = (window.innerWidth - 14 - 360) + "px";
+  } else {
+    popup.style.left = "14px";
+  }
 
   // se dorme, lo rimetto a dormire nel posto giusto
   if (stato === "dorme") {
@@ -395,7 +428,7 @@ function alzati() {
   let p = posizioneCasaFranco();
   ominoX = p.x;
   ominoY = p.y;
-  direzione = 1;
+  direzione = segno(); // guarda verso il centro dello schermo
   omino.style.display = "block";
 
   if (impostazioni.casa) {
@@ -858,11 +891,11 @@ function iniziaPulizia(usaCamion) {
   aggiornaSacco();
 
   if (usaCamion) {
-    // il camion arriva da sinistra a prendere Franco
+    // il camion arriva dal bordo dello schermo (dalla parte della casa)
     parla(frase("camion"), 4000);
-    camionX = -120;
+    camionX = dalBordo(-120);
     camionY = ominoY;
-    direzioneCamion = 1;
+    direzioneCamion = segno();
     camion.style.display = "block";
     disegnaCamion();
     stato = "camion_arriva";
@@ -1106,7 +1139,7 @@ function passo() {
         saliInAuto();
       }
     } else if (guidaAuto(p.x, p.y) === 0) {
-      direzioneAuto = 1;
+      direzioneAuto = segno();
       scendiDallAuto();
       disegnaAuto();
       stato = "rientra";
@@ -1122,18 +1155,18 @@ function passo() {
     }
   } else if (stato === "camion_a_casa") {
     let p = posizioneCasaFranco();
-    if (guidaCamion(p.x + 60, p.y) === 0) {
+    if (guidaCamion(p.x + 60 * segno(), p.y) === 0) {
       // Franco scende, il camion se ne va
       inCamion = false;
-      ominoX = camionX - 60;
+      ominoX = camionX - 60 * segno();
       ominoY = camionY;
-      direzione = 1;
+      direzione = segno();
       omino.style.display = "block";
       parla(frase("grazieCamion"));
       stato = "camion_va_via";
     }
   } else if (stato === "camion_va_via") {
-    if (guidaCamion(-200, camionY) === 0) {
+    if (guidaCamion(dalBordo(-200), camionY) === 0) {
       camion.style.display = "none";
       conCamion = false;
       tornaACasa();
@@ -1161,9 +1194,9 @@ function passo() {
   } else if (stato === "al_bidone") {
     let b = posizioneBidone();
     let distanzaBidone = conCamion ? 110 : 70;
-    if (muovi(b.x + distanzaBidone, b.y) === 0) {
-      direzione = -1; // si gira verso il bidone
-      direzioneCamion = -1;
+    if (muovi(b.x + distanzaBidone * segno(), b.y) === 0) {
+      direzione = -segno(); // si gira verso il bidone
+      direzioneCamion = -segno();
       if (conCamion) {
         disegnaCamion();
       }
@@ -1362,6 +1395,12 @@ btnChiudiMenu.addEventListener("click", chiudiMenu);
 async function avvio() {
   let info = await window.mac.info();
   fondo = info.fondo;
+  lato = info.lato;
+
+  // il notch c'è solo sul Mac: altrimenti tolgo l'interruttore
+  if (!info.notch) {
+    sceltaNotch.closest("label").style.display = "none";
+  }
 
   // disegni
   casa.innerHTML = disegnoCasa();

@@ -11,6 +11,10 @@ const cartellaScrivania = app.getPath("desktop");
 const cartellaDestinazione = path.join(app.getPath("documents"), "Aspirato");
 const fileImpostazioni = path.join(app.getPath("userData"), "impostazioni.json");
 
+// siamo su Windows o su Mac?
+const suWindows = process.platform === "win32";
+const suMac = process.platform === "darwin";
+
 let finestra;        // la finestra grande con Franco (sulla Scrivania)
 let finestraNotch;   // la finestrella del notch (si può spegnere)
 
@@ -71,8 +75,8 @@ function creaFinestra() {
 // ===== FINESTRELLA DEL NOTCH =====
 // Una piccola striscia nera attaccata al notch: cliccandola svegli Franco
 function creaNotch() {
-  if (finestraNotch) {
-    return; // c'è già
+  if (finestraNotch || !suMac) {
+    return; // c'è già, oppure non siamo su un Mac (il notch c'è solo sul Mac)
   }
   const schermo = screen.getPrimaryDisplay();
   const altezzaBarra = Math.max(schermo.workArea.y - schermo.bounds.y, 24);
@@ -110,9 +114,14 @@ function chiudiNotch() {
 }
 
 
-// Chiede al Finder la posizione delle icone sulla Scrivania
+// Chiede al Finder la posizione delle icone sulla Scrivania (solo Mac)
 // Restituisce un oggetto tipo: { "foto.png": { x: 1200, y: 80 }, ... }
 function posizioniDaFinder() {
+  if (!suMac) {
+    // su Windows non c'è il Finder: si usano le posizioni di riserva
+    return Promise.resolve({});
+  }
+
   const script =
     'tell application "Finder"\n' +
     '  set risultato to ""\n' +
@@ -151,9 +160,15 @@ function posizioniDaFinder() {
 // ===== COSE CHE LA PAGINA PUO' CHIEDERE =====
 
 // Misure: dove finisce lo spazio (sopra il Dock), dentro la finestra
+// e da che parte mettere la casetta: sul Mac a sinistra,
+// su Windows a destra (perché a sinistra ci sono le icone)
 ipcMain.handle("info", function () {
   const area = screen.getPrimaryDisplay().workArea;
-  return { fondo: area.height };
+  return {
+    fondo: area.height,
+    lato: suWindows ? "destra" : "sinistra",
+    notch: suMac
+  };
 });
 
 ipcMain.handle("leggi-impostazioni", function () {
@@ -187,10 +202,18 @@ ipcMain.handle("leggi-file", async function () {
       // posizione vera dell'icona (tolgo la barra dei menu)
       x = posizioni[nome].x - area.x;
       y = posizioni[nome].y - area.y;
+    } else if (suWindows) {
+      // Windows mette le icone in colonne partendo da sinistra in alto
+      let righe = Math.max(Math.floor((area.height - 20) / 95), 1);
+      let colonna = Math.floor(lista.length / righe);
+      let riga = lista.length % righe;
+      x = 45 + colonna * 80;
+      y = 45 + riga * 95;
     } else {
-      // posizione di riserva: colonne partendo da destra, come fa il Finder
-      let colonna = Math.floor(lista.length / 8);
-      let riga = lista.length % 8;
+      // posizione di riserva sul Mac: colonne partendo da destra, come fa il Finder
+      let righe = Math.max(Math.floor((area.height - 40) / 100), 1);
+      let colonna = Math.floor(lista.length / righe);
+      let riga = lista.length % righe;
       x = area.width - 70 - colonna * 100;
       y = 60 + riga * 100;
     }
@@ -338,7 +361,7 @@ ipcMain.on("esci", function () {
 
 // ===== AVVIO =====
 app.whenReady().then(function () {
-  // niente icona nel Dock: Franco vive sulla Scrivania
+  // niente icona nel Dock (sul Mac): Franco vive sulla Scrivania
   if (app.dock) {
     app.dock.hide();
   }

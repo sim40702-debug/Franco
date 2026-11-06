@@ -1,11 +1,13 @@
 {
   "name": "franco-spazzino",
   "version": "1.0.0",
-  "description": "Franco dorme nel notch e quando lo svegli pulisce la Scrivania del Mac",
+  "description": "Franco vive sulla Scrivania (Mac e Windows) e quando lo svegli la pulisce",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "app": "electron-packager . Franco --platform=darwin --arch=arm64 --icon=icona.icns --out=dist --overwrite"
+    "app-mac": "electron-packager . Franco --platform=darwin --arch=arm64 --icon=icona.icns --out=dist --overwrite",
+    "app-windows": "electron-packager . Franco --platform=win32 --arch=x64 --icon=icona.ico --out=dist --overwrite",
+    "app-windows-senza-icona": "electron-packager . Franco --platform=win32 --arch=x64 --out=dist --overwrite"
   },
   "devDependencies": {
     "@electron/packager": "^20.3.0",
